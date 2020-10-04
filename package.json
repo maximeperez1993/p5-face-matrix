@@ -1,0 +1,14 @@
+{
+  "name": "face-matrix",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/sketch.js",
+  "author": "",
+  "license": "ISC",
+  "keywords": [],
+  "devDependencies": {},
+  "dependencies": {
+    "p5": "^1.1.9"
+  },
+  "scripts": {}
+}
