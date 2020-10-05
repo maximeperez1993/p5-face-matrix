@@ -1,6 +1,6 @@
 const columnProperties = {
-    charSize: 20,
-    speed: {min: 1, max: 2},
+    charSize: 15,
+    speed: {min: 5, max: 20},
     length: {min: 3, max: 15},
     charset: initCharset(31, 126)
 }
@@ -41,7 +41,13 @@ class Matrix {
                 if (random() > 0.5) continue;
                 let newX = vector.x + x;
                 let newY = vector.y + y;
-                if (newX >= image.width || newY >= image.height) continue;
+                let imageRight = (width / 2 - image.width / 2) + image.width;
+                let imageLeft = (width / 2 - image.width / 2);
+                let imageBottom = (height / 2 - image.height / 2) + image.height;
+                let imageTop = (height / 2 - image.height / 2);
+
+                //if (newX >= image.width || newY >= image.height) continue;
+                if (newX < imageLeft || newX >= imageRight || newY < imageTop || newY >= imageBottom) continue;
                 this.pixelSet.add({x: newX, y: newY});
             }
         }
@@ -51,10 +57,10 @@ class Matrix {
         image.loadPixels();
         loadPixels();
         for (let item of this.pixelSet) {
-            let x = item.x + (width / 2 - image.width / 2);
-            let y = item.y + (height / 2 - image.height / 2);
-            let index = (x + (y * width)) * 4;
-            let imageIndex = (item.x + (item.y * image.width)) * 4;
+            let x = item.x - (width / 2 - image.width / 2);
+            let y = item.y - (height / 2 - image.height / 2);
+            let index = (item.x + (item.y * width)) * 4;
+            let imageIndex = (x + (y * image.width)) * 4;
             pixels[index] = image.pixels[imageIndex] / 2;
             pixels[index + 1] = image.pixels[imageIndex + 1];
             pixels[index + 2] = image.pixels[imageIndex + 2] / 2;
