@@ -17,7 +17,7 @@ class Matrix {
 
 
         let x = round(random(this.maxElements)) * columnProperties.charSize;
-        let probability = this.isOnColImage(x) ? 0.1 : 0.03;
+        let probability = this.isOnColImage(x) ? 0.8 : 0.1;
         if (random() < probability) {
             let column = this.columns.find(column => column.vector.x === x);
             if (column == null) {
@@ -33,7 +33,7 @@ class Matrix {
     draw() {
         textFont('Helvetica', charSize);
         this.columns.forEach(column => column.draw());
-        this.columns = this.columns.map(column => column.reset());
+        this.columns = this.columns.filter(column => !column.shouldReset());
     }
 
     fillSet(vector) {
@@ -62,6 +62,7 @@ class Matrix {
             let y = item.y - (height / 2 - image.height / 2);
             let index = (item.x + (item.y * width)) * 4;
             let imageIndex = (x + (y * image.width)) * 4;
+
             pixels[index] = image.pixels[imageIndex] / 2;
             pixels[index + 1] = image.pixels[imageIndex + 1];
             pixels[index + 2] = image.pixels[imageIndex + 2] / 2;
