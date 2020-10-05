@@ -12,20 +12,23 @@ class Column {
         this.properties = properties;
 
         this.charset = properties.charset;
-
         this.length = initRange(properties.length) - 1;
         this.chars = Array(this.length).fill(random(this.charset));
         this.headChar = random(this.charset);
 
         this.vector = createVector(x, -this.length);
-        this.speed = initRange(properties.speed);
+        this.speed = round(10 / initRange(properties.speed));
 
         this.charColor = color(60, 190, 60);
         this.headCharColor = color(190, 255, 190);
     }
 
+    getHead() {
+        return createVector(this.vector.x, (this.vector.y + this.length) * charSize);
+    }
+
     reset() {
-        return this.shouldReset() ? new Column(this.vector.x, this.properties) : this;
+        return this.shouldReset() ? new Column(this.vector.x, this.properties, this.contacts) : this;
     }
 
     draw() {
@@ -38,7 +41,6 @@ class Column {
         if (frameCount % this.speed !== 0) {
             return;
         }
-
         this.vector.y++;
         this.chars.push(this.headChar);
         this.chars.shift()
@@ -47,11 +49,13 @@ class Column {
 
     drawChars() {
         fill(this.charColor);
+        stroke(this.charColor);
         this.chars.forEach((char, i) => this.text(char, i));
     }
 
     drawHeadChar() {
         fill(this.headCharColor);
+        stroke(this.charColor);
         this.text(this.headChar, this.length);
     }
 
