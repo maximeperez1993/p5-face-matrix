@@ -1,6 +1,6 @@
 const columnProperties = {
     charSize: 20,
-    speed: {min: 5, max: 10},
+    speed: {min: 1, max: 2},
     length: {min: 3, max: 15},
     charset: initCharset(31, 126)
 }
@@ -10,15 +10,23 @@ class Matrix {
         this.columns = [];
         this.pixelSet = new Set();
 
-        let nbElements = (width / columnProperties.charSize) - 1;
-        for (let i = 0; i < nbElements; i++) {
-            this.columns[i] = new Column(i * columnProperties.charSize, columnProperties);
-        }
+        this.maxElements = (width / columnProperties.charSize) - 1;
     }
 
     paint(image) {
+
+        if (random() < 0.05) {
+            let x = round(random(this.maxElements)) * columnProperties.charSize;
+            let column = this.columns.find(column => column.vector.x === x);
+            console.log(this.columns);
+            if (column == null) {
+                this.columns.push(new Column(x, columnProperties));
+            }
+
+        }
+
         this.columns.forEach(column => this.fillSet(column.getHead()));
-        this.applyImage();
+        this.applyImage(image);
     }
 
     draw() {
@@ -39,7 +47,7 @@ class Matrix {
         }
     }
 
-    applyImage() {
+    applyImage(image) {
         image.loadPixels();
         loadPixels();
         for (let item of this.pixelSet) {

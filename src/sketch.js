@@ -10,8 +10,6 @@ function preload() {
 
 function setup() {
     createCanvas(innerWidth, innerHeight);
-    //createCanvas(image.width, image.height);
-
     textFont('Helvetica', charSize);
     pixelDensity(1);
     matrix = new Matrix();
