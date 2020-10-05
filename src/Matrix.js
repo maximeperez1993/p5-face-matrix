@@ -15,10 +15,11 @@ class Matrix {
 
     paint(image) {
 
-        if (random() < 0.05) {
-            let x = round(random(this.maxElements)) * columnProperties.charSize;
+
+        let x = round(random(this.maxElements)) * columnProperties.charSize;
+        let probability = this.isOnColImage(x) ? 0.1 : 0.03;
+        if (random() < probability) {
             let column = this.columns.find(column => column.vector.x === x);
-            console.log(this.columns);
             if (column == null) {
                 this.columns.push(new Column(x, columnProperties));
             }
@@ -67,6 +68,12 @@ class Matrix {
             pixels[index + 3] = image.pixels[imageIndex + 3];
         }
         updatePixels();
+    }
+
+    isOnColImage(x) {
+        let imageRight = (width / 2 - image.width / 2) + image.width;
+        let imageLeft = (width / 2 - image.width / 2);
+        return x >= imageLeft && x < imageRight;
     }
 }
 
