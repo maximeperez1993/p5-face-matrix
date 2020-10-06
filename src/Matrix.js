@@ -66,11 +66,13 @@ class Matrix {
     applyImage(image) {
         image.loadPixels();
         loadPixels();
+        let margX = (width / 2 - image.width / 2);
+        let margY = (height / 2 - image.height / 2);
         for (let item of this.pixels) {
             let index = (item.x + (item.y * width)) * 4;
 
-            let x = item.x - (width / 2 - image.width / 2);
-            let y = item.y - (height / 2 - image.height / 2);
+            let x = item.x - margX;
+            let y = item.y - margY;
             let imageIndex = (x + (y * image.width)) * 4;
 
             pixels[index] = image.pixels[imageIndex] / 2;
