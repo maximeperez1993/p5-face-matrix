@@ -1,8 +1,11 @@
+
 const columnProperties = {
+    charSize: {min: 8, max: 19},
     speed: {min: 6, max: 10},
     length: {min: 3, max: 50},
     charset: initCharset([31, 126], [23500, 23550])
 }
+const charSize = columnProperties.charSize.max;
 
 class Matrix {
     constructor() {
@@ -15,15 +18,15 @@ class Matrix {
         img.loadPixels();
         this.imagePixels = img.pixels;
         this.maxPixels = img.width * img.height;
-        this.maxPixelsToDraw = 0.93 * this.maxPixels;
     }
 
-    paint(image) {
-        this.addColumn(this.maxElements, 0);
-        this.addColumn(this.maxElements / 4, 0);
+    paint() {
+        this.addColumn(this.maxElements / 2, 0);
         this.addColumn(this.maxElements / 3, 0);
-        this.columns.forEach(column => this.fillSet(column.getHead()));
-        this.applyImage(image);
+
+        if (this.pixels.length !== this.maxPixels) {
+            this.columns.forEach(column => this.fillSet(column.getHead()));
+        }
     }
 
     addColumn(max, margin) {
@@ -37,17 +40,10 @@ class Matrix {
         }
     }
 
-    draw() {
-        this.columns.forEach(column => column.draw());
-        this.columns = this.columns.filter(column => !column.shouldReset());
-    }
-
     fillSet(vector) {
-
-        if (this.pixels.length === this.maxPixelsToDraw) return;
-
         if (vector.x >= img.width || vector.y >= img.height) return;
-        let probabilityToAdd = (sqrt(this.pixels.length + 1) * 2.3) / 1000;
+
+        let probabilityToAdd = (sqrt(this.pixels.length + 1) * 3) / 1000;
         for (let x = 0; x < charSize; x++) {
             for (let y = 0; y < charSize; y++) {
                 if (random() > probabilityToAdd) continue;
@@ -65,6 +61,12 @@ class Matrix {
             this.pixelsMark[x + ',' + y] = true;
             this.pixels.push({x: x, y: y});
         }
+    }
+
+    draw(image) {
+        this.applyImage(image);
+        this.columns.forEach(column => column.draw());
+        this.columns = this.columns.filter(column => !column.shouldReset());
     }
 
     applyImage(image) {

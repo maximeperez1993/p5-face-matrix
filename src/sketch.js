@@ -3,7 +3,7 @@
  * Sketch at https://www.openprocessing.org/sketch/978568
  */
 
-const charSize = 15;
+
 
 let matrix;
 let img;
@@ -14,15 +14,14 @@ function preload() {
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    textFont('Helvetica', charSize);
     pixelDensity(1);
     matrix = new Matrix();
 }
 
 function draw() {
     background(0);
-    matrix.paint(img);
-    matrix.draw();
+    matrix.paint();
+    matrix.draw(img);
 }
 
 

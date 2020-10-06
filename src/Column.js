@@ -10,6 +10,7 @@ class Column {
      */
     constructor(x, properties) {
         this.charset = properties.charset;
+        this.charSize = initRange(properties.charSize);
         this.length = initRange(properties.length) - 1;
         this.chars = Array(this.length).fill(random(this.charset));
         this.headChar = random(this.charset);
@@ -18,14 +19,15 @@ class Column {
         this.speed = max(round(10 / initRange(properties.speed)), 1);
 
         this.charColor = color(60, 190, 60);
-        this.headCharColor = color(255, 255, 255);
+        this.headCharColor = color(230, 255, 230);
     }
 
     getHead() {
-        return createVector(this.vector.x, (this.vector.y + this.length) * charSize);
+        return createVector(this.vector.x, (this.vector.y + this.length) * this.charSize);
     }
 
     draw() {
+        textFont('Helvetica', this.charSize);
         this.scroll();
         this.drawChars();
         this.drawHeadChar();
@@ -49,7 +51,7 @@ class Column {
 
     drawHeadChar() {
         fill(this.headCharColor);
-        stroke(this.charColor);
+        stroke(this.headCharColor);
         this.text(this.headChar, this.length);
     }
 
@@ -58,11 +60,11 @@ class Column {
     }
 
     calcY(index) {
-        return (this.vector.y + index) * charSize;
+        return (this.vector.y + index) * this.charSize;
     }
 
     shouldReset() {
-        return this.vector.y * charSize > height;
+        return this.vector.y * this.charSize > height;
     }
 
     shouldBlockNextColumn(x) {
