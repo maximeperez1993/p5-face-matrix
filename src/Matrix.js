@@ -1,5 +1,4 @@
 const columnProperties = {
-    charSize: 15,
     speed: {min: 6, max: 10},
     length: {min: 3, max: 50},
     charset: initCharset([31, 126], [23500, 23550])
@@ -11,36 +10,34 @@ class Matrix {
         this.pixels = [];
         this.pixelsMark = [];
 
-        this.maxElements = (width / columnProperties.charSize) - 1;
+        this.maxElements = (width / charSize) - 1;
 
-        this.margX = (width / 2 - image.width / 2);
-        this.margY = (height / 2 - image.height / 2);
+        this.margX = (width / 2 - img.width / 2);
+        this.margY = (height / 2 - img.height / 2);
 
-        this.imageRight = width / 2 + image.width / 2;
-        this.imageLeft = width / 2 - image.width / 2;
-        this.imageBottom = height / 2 + image.height / 2;
-        this.imageTop = height / 2 - image.height / 2;
+        this.imageRight = width / 2 + img.width / 2;
+        this.imageLeft = width / 2 - img.width / 2;
+        this.imageBottom = height / 2 + img.height / 2;
+        this.imageTop = height / 2 - img.height / 2;
 
-        image.loadPixels();
-        this.imagePixels = image.pixels;
-        this.maxPixels = image.width * image.height;
+        img.loadPixels();
+        this.imagePixels = img.pixels;
+        this.maxPixels = img.width * img.height;
         this.maxPixelsToDraw = 0.93 * this.maxPixels;
     }
 
     paint(image) {
-        this.addColumn(this.maxElements);
-
+        this.addColumn(this.maxElements, 0);
+        this.addColumn(this.maxElements / 4, this.maxElements / 2);
+        this.addColumn(this.maxElements / 3, this.maxElements / 3);
         this.columns.forEach(column => this.fillSet(column.getHead()));
         this.applyImage(image);
     }
 
-    addColumn(max) {
-
-
-        let x = round(random(max)) * columnProperties.charSize;
-        let probability = this.isOnColImage(x) ? 0.5 : 0.9;
-        if (random() < probability) return;
-
+    addColumn(max, margin) {
+        let x = round(random(max) + margin) * charSize;
+        let probabilityToAdd = 0.2;
+        if (random() > probabilityToAdd) return;
 
         let shouldBlockNextColumn = this.columns.some(column => column.shouldBlockNextColumn(x));
         if (!shouldBlockNextColumn) {
@@ -49,7 +46,6 @@ class Matrix {
     }
 
     draw() {
-        textFont('Helvetica', charSize);
         this.columns.forEach(column => column.draw());
         this.columns = this.columns.filter(column => !column.shouldReset());
     }
@@ -59,7 +55,7 @@ class Matrix {
         if (this.pixels.length === this.maxPixelsToDraw) return;
 
         if (vector.x < this.imageLeft || vector.x >= this.imageRight ||
-            vector.y < this.imageTop || vector.y >= this.imageBottom) return;
+            vector.y + charSize < this.imageTop || vector.y >= this.imageBottom) return;
 
         let probabilityToAdd = (sqrt(this.pixels.length + 1) * 2.3) / 1000;
         for (let x = 0; x < charSize; x++) {
@@ -102,8 +98,8 @@ class Matrix {
     }
 
     isOnColImage(x) {
-        let imageRight = (width / 2 - image.width / 2) + image.width;
-        let imageLeft = (width / 2 - image.width / 2);
+        let imageRight = (width / 2 - img.width / 2) + img.width;
+        let imageLeft = (width / 2 - img.width / 2);
         return x >= imageLeft && x < imageRight;
     }
 }
