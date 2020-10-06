@@ -9,14 +9,12 @@ class Column {
      * }
      */
     constructor(x, properties) {
-        this.properties = properties;
-
         this.charset = properties.charset;
         this.length = initRange(properties.length) - 1;
         this.chars = Array(this.length).fill(random(this.charset));
         this.headChar = random(this.charset);
 
-        this.vector = createVector(x, -this.length * charSize);
+        this.vector = createVector(x, -this.length + 1);
         this.speed = max(round(10 / initRange(properties.speed)), 1);
 
         this.charColor = color(60, 190, 60);
@@ -25,10 +23,6 @@ class Column {
 
     getHead() {
         return createVector(this.vector.x, (this.vector.y + this.length) * charSize);
-    }
-
-    reset() {
-        return this.shouldReset() ? new Column(this.vector.x, this.properties, this.contacts) : this;
     }
 
     draw() {
@@ -69,6 +63,10 @@ class Column {
 
     shouldReset() {
         return this.vector.y * charSize > height;
+    }
+
+    shouldBlockNextColumn(x) {
+        return this.vector.x === x;
     }
 }
 
