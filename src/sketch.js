@@ -3,13 +3,13 @@
  * Sketch at https://www.openprocessing.org/sketch/978568
  */
 
-const charSize = 20;
+const charSize = 15;
 
 let matrix;
-let image;
+let img;
 
 function preload() {
-    image = loadImage('image.jpg');
+    img = loadImage('image.jpg');
 }
 
 function setup() {
@@ -22,8 +22,7 @@ function setup() {
 
 function draw() {
     background(0);
-
-    matrix.paint(image);
+    matrix.paint(img);
     matrix.draw();
 }
 
