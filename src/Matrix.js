@@ -1,4 +1,3 @@
-
 const columnProperties = {
     charSize: {min: 8, max: 19},
     speed: {min: 6, max: 10},
@@ -21,10 +20,15 @@ class Matrix {
     }
 
     paint() {
-        this.addColumn(this.maxElements / 2, 0);
-        this.addColumn(this.maxElements / 3, 0);
+        if (width / 2 > img.width) {
+            this.addColumn(this.maxElements / 2, 0);
+            this.addColumn(this.maxElements / 3, 0);
+        } else {
+            this.addColumn(this.maxElements, 0);
+        }
 
-        if (this.pixels.length !== this.maxPixels) {
+
+        if (!this.isFinish()) {
             this.columns.forEach(column => this.fillSet(column.getHead()));
         }
     }
@@ -74,9 +78,7 @@ class Matrix {
         for (let item of this.pixels) {
             if (item.global == null) {
                 let index = (item.x + (item.y * width)) * 4;
-                let imageX = item.x;
-                let imageY = item.y;
-                let imageIndex = (imageX + (imageY * image.width)) * 4;
+                let imageIndex = (item.x + (item.y * image.width)) * 4;
                 item.global = {index: index};
                 item.image = {index: imageIndex};
             }
@@ -92,6 +94,10 @@ class Matrix {
         let imageRight = (width / 2 - img.width / 2) + img.width;
         let imageLeft = (width / 2 - img.width / 2);
         return x >= imageLeft && x < imageRight;
+    }
+
+    isFinish() {
+        return this.pixels.length === this.maxPixels;
     }
 }
 
