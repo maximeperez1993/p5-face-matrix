@@ -13,7 +13,8 @@ function preload() {
 }
 
 function setup() {
-    createCanvas(innerWidth / 2, innerHeight);
+    //createCanvas(innerWidth / 2, innerHeight);
+    createCanvas(windowWidth, windowHeight);
     textFont('Helvetica', charSize);
     pixelDensity(1);
     matrix = new Matrix();
