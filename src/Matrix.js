@@ -8,22 +8,17 @@ const columnProperties = {
 class Matrix {
     constructor() {
         this.columns = [];
-        this.pixelSet = new Set();
+        this.pixels = [];
+        this.pixelsMark = [];
 
         this.maxElements = (width / columnProperties.charSize) - 1;
     }
 
     paint(image) {
-
-
         let x = round(random(this.maxElements)) * columnProperties.charSize;
-        let probability = this.isOnColImage(x) ? 0.8 : 0.1;
-        if (random() < probability) {
-            let column = this.columns.find(column => column.vector.x === x);
-            if (column == null) {
-                this.columns.push(new Column(x, columnProperties));
-            }
-
+        let column = this.columns.find(column => column.vector.x === x);
+        if (column == null && random() < frameCount / 2000) {
+            this.columns.push(new Column(x, columnProperties));
         }
 
         this.columns.forEach(column => this.fillSet(column.getHead()));
@@ -37,9 +32,10 @@ class Matrix {
     }
 
     fillSet(vector) {
+        let probability = 1 - (sqrt(this.pixels.length + 1) * 2) / 1000;
         for (let x = 0; x < charSize; x++) {
             for (let y = 0; y < charSize; y++) {
-                if (random() > 0.5) continue;
+                if (random() < probability) continue;
                 let newX = vector.x + x;
                 let newY = vector.y + y;
                 let imageRight = (width / 2 - image.width / 2) + image.width;
@@ -47,17 +43,23 @@ class Matrix {
                 let imageBottom = (height / 2 - image.height / 2) + image.height;
                 let imageTop = (height / 2 - image.height / 2);
 
-                //if (newX >= image.width || newY >= image.height) continue;
                 if (newX < imageLeft || newX >= imageRight || newY < imageTop || newY >= imageBottom) continue;
-                this.pixelSet.add({x: newX, y: newY});
+                this.addPixel(newX, newY);
             }
+        }
+    }
+
+    addPixel(x, y) {
+        if (!this.pixelsMark[x + ',' + y]) {
+            this.pixels.push({x: x, y: y});
+            this.pixelsMark[x + ',' + y] = true;
         }
     }
 
     applyImage(image) {
         image.loadPixels();
         loadPixels();
-        for (let item of this.pixelSet) {
+        for (let item of this.pixels) {
             let x = item.x - (width / 2 - image.width / 2);
             let y = item.y - (height / 2 - image.height / 2);
             let index = (item.x + (item.y * width)) * 4;
