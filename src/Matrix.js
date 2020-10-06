@@ -2,7 +2,7 @@ const columnProperties = {
     charSize: 15,
     speed: {min: 5, max: 10},
     length: {min: 3, max: 15},
-    charset: initCharset(31, 126)
+    charset: initCharset([31, 126], [23500, 23550])
 }
 
 class Matrix {
@@ -84,6 +84,10 @@ class Matrix {
     }
 }
 
-function initCharset(start, end) {
+function initCharset(...intervals) {
+    return intervals.flatMap(interval => initCharsetInteval(interval[0], interval[1]));
+}
+
+function initCharsetInteval(start, end) {
     return Array(end - start + 1).fill().map((_, idx) => String.fromCharCode(start + idx));
 }
