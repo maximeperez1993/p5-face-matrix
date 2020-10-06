@@ -20,7 +20,7 @@ class Column {
         this.speed = max(round(10 / initRange(properties.speed)), 1);
 
         this.charColor = color(60, 190, 60);
-        this.headCharColor = color(190, 255, 190);
+        this.headCharColor = color(255, 255, 255);
     }
 
     getHead() {
