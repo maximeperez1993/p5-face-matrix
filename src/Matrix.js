@@ -12,14 +12,6 @@ class Matrix {
 
         this.maxElements = (width / charSize) - 1;
 
-        this.margX = (width / 2 - img.width / 2);
-        this.margY = (height / 2 - img.height / 2);
-
-        this.imageRight = width / 2 + img.width / 2;
-        this.imageLeft = width / 2 - img.width / 2;
-        this.imageBottom = height / 2 + img.height / 2;
-        this.imageTop = height / 2 - img.height / 2;
-
         img.loadPixels();
         this.imagePixels = img.pixels;
         this.maxPixels = img.width * img.height;
@@ -28,15 +20,15 @@ class Matrix {
 
     paint(image) {
         this.addColumn(this.maxElements, 0);
-        this.addColumn(this.maxElements / 4, this.maxElements / 2);
-        this.addColumn(this.maxElements / 3, this.maxElements / 3);
+        this.addColumn(this.maxElements / 4, 0);
+        this.addColumn(this.maxElements / 3, 0);
         this.columns.forEach(column => this.fillSet(column.getHead()));
         this.applyImage(image);
     }
 
     addColumn(max, margin) {
         let x = round(random(max) + margin) * charSize;
-        let probabilityToAdd = 0.2;
+        let probabilityToAdd = 0.3;
         if (random() > probabilityToAdd) return;
 
         let shouldBlockNextColumn = this.columns.some(column => column.shouldBlockNextColumn(x));
@@ -54,9 +46,7 @@ class Matrix {
 
         if (this.pixels.length === this.maxPixelsToDraw) return;
 
-        if (vector.x < this.imageLeft || vector.x >= this.imageRight ||
-            vector.y + charSize < this.imageTop || vector.y >= this.imageBottom) return;
-
+        if (vector.x >= img.width || vector.y >= img.height) return;
         let probabilityToAdd = (sqrt(this.pixels.length + 1) * 2.3) / 1000;
         for (let x = 0; x < charSize; x++) {
             for (let y = 0; y < charSize; y++) {
@@ -64,8 +54,7 @@ class Matrix {
                 let newX = vector.x + x;
                 let newY = vector.y + y;
 
-                if (newX < this.imageLeft || newX >= this.imageRight ||
-                    newY < this.imageTop || newY >= this.imageBottom) continue;
+                if (newX >= img.width || newY >= img.height) continue;
                 this.addPixel(newX, newY);
             }
         }
@@ -83,8 +72,8 @@ class Matrix {
         for (let item of this.pixels) {
             if (item.global == null) {
                 let index = (item.x + (item.y * width)) * 4;
-                let imageX = item.x - this.margX;
-                let imageY = item.y - this.margY;
+                let imageX = item.x;
+                let imageY = item.y;
                 let imageIndex = (imageX + (imageY * image.width)) * 4;
                 item.global = {index: index};
                 item.image = {index: imageIndex};

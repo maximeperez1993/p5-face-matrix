@@ -14,7 +14,7 @@ class Column {
         this.chars = Array(this.length).fill(random(this.charset));
         this.headChar = random(this.charset);
 
-        this.vector = createVector(x, -this.length + 1);
+        this.vector = createVector(x, -this.length);
         this.speed = max(round(10 / initRange(properties.speed)), 1);
 
         this.charColor = color(60, 190, 60);

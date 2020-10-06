@@ -13,7 +13,6 @@ function preload() {
 }
 
 function setup() {
-    //createCanvas(innerWidth / 2, innerHeight);
     createCanvas(windowWidth, windowHeight);
     textFont('Helvetica', charSize);
     pixelDensity(1);
@@ -24,5 +23,11 @@ function draw() {
     background(0);
     matrix.paint(img);
     matrix.draw();
+}
+
+
+function windowResized() {
+    createCanvas(windowWidth, windowHeight);
+    matrix = new Matrix();
 }
 
