@@ -1,6 +1,6 @@
 const columnProperties = {
     charSize: 15,
-    speed: {min: 5, max: 20},
+    speed: {min: 5, max: 10},
     length: {min: 3, max: 15},
     charset: initCharset(31, 126)
 }
