@@ -7,31 +7,75 @@ const columnProperties = {
 const charSize = columnProperties.charSize.max;
 
 class Matrix {
-    constructor() {
+    constructor(image) {
         this.columns = [];
         this.pixels = [];
         this.pixelsMark = [];
 
         this.maxElements = (width / charSize) - 1;
 
-        img.loadPixels();
-        this.imagePixels = img.pixels;
-        this.maxPixels = img.width * img.height;
+        image.loadPixels();
+        this.imagePixels = image.pixels;
+        this.countMax = 0;
     }
 
-    paint() {
+    paint(skm, image) {
+        this.countDebug = 0;
+
+        skm.loadPixels();
+        this.columns.forEach(column => this.fillSet(column.getHead(), skm, image));
+        skm.updatePixels();
+
+        if (this.countMax < this.countDebug) {
+            this.countMax = this.countDebug;
+            console.log(this.countDebug);
+        }
+
+    }
+
+
+    fillSet(vector, skm, image) {
+        if (vector.x >= img.width || vector.y >= img.height) return;
+        this.countDebug++;
+        let probabilityToAdd = (frameCount + 1) / 1000;
+        for (let x = 0; x < charSize; x++) {
+            for (let y = 0; y < charSize; y++) {
+                if (random() > probabilityToAdd) continue;
+                let newX = vector.x + x;
+                let newY = vector.y + y;
+
+                if (newX >= img.width || newY >= img.height) continue;
+                this.addPixel(skm, newX, newY, image);
+
+            }
+        }
+    }
+
+    addPixel(skm, x, y, image) {
+        if (!this.pixelsMark[x + ',' + y]) {
+            this.pixelsMark[x + ',' + y] = true;
+
+            let index = (x + (y * width)) * 4;
+            let imageIndex = (x + (y * image.width)) * 4;
+
+            skm.pixels[index] = this.imagePixels[imageIndex] / 2;
+            skm.pixels[index + 1] = this.imagePixels[imageIndex + 1];
+            skm.pixels[index + 2] = this.imagePixels[imageIndex + 2] / 2;
+            skm.pixels[index + 3] = this.imagePixels[imageIndex + 3];
+        }
+    }
+
+    draw() {
         if (width / 2 > img.width) {
             this.addColumn(this.maxElements / 2, 0);
             this.addColumn(this.maxElements / 3, 0);
         } else {
             this.addColumn(this.maxElements, 0);
         }
-
-
-        if (!this.isFinish()) {
-            this.columns.forEach(column => this.fillSet(column.getHead()));
-        }
+        this.columns.forEach(column => column.draw());
+        this.columns = this.columns.filter(column => !column.shouldReset());
     }
+
 
     addColumn(max, margin) {
         let x = round(random(max) + margin) * charSize;
@@ -42,62 +86,6 @@ class Matrix {
         if (!shouldBlockNextColumn) {
             this.columns.push(new Column(x, columnProperties));
         }
-    }
-
-    fillSet(vector) {
-        if (vector.x >= img.width || vector.y >= img.height) return;
-
-        let probabilityToAdd = (sqrt(this.pixels.length + 1) * 3) / 1000;
-        for (let x = 0; x < charSize; x++) {
-            for (let y = 0; y < charSize; y++) {
-                if (random() > probabilityToAdd) continue;
-                let newX = vector.x + x;
-                let newY = vector.y + y;
-
-                if (newX >= img.width || newY >= img.height) continue;
-                this.addPixel(newX, newY);
-            }
-        }
-    }
-
-    addPixel(x, y) {
-        if (!this.pixelsMark[x + ',' + y]) {
-            this.pixelsMark[x + ',' + y] = true;
-            this.pixels.push({x: x, y: y});
-        }
-    }
-
-    draw(image) {
-        this.applyImage(image);
-        this.columns.forEach(column => column.draw());
-        this.columns = this.columns.filter(column => !column.shouldReset());
-    }
-
-    applyImage(image) {
-        loadPixels();
-        for (let item of this.pixels) {
-            if (item.global == null) {
-                let index = (item.x + (item.y * width)) * 4;
-                let imageIndex = (item.x + (item.y * image.width)) * 4;
-                item.global = {index: index};
-                item.image = {index: imageIndex};
-            }
-            pixels[item.global.index] = this.imagePixels[item.image.index] / 2;
-            pixels[item.global.index + 1] = this.imagePixels[item.image.index + 1];
-            pixels[item.global.index + 2] = this.imagePixels[item.image.index + 2] / 2;
-            pixels[item.global.index + 3] = this.imagePixels[item.image.index + 3];
-        }
-        updatePixels();
-    }
-
-    isOnColImage(x) {
-        let imageRight = (width / 2 - img.width / 2) + img.width;
-        let imageLeft = (width / 2 - img.width / 2);
-        return x >= imageLeft && x < imageRight;
-    }
-
-    isFinish() {
-        return this.pixels.length === this.maxPixels;
     }
 }
 
