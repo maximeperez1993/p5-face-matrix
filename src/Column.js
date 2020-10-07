@@ -20,6 +20,8 @@ class Column {
 
         this.charColor = color(60, 190, 60);
         this.headCharColor = color(230, 255, 230);
+        this.shouldDecrypt = random() > 0.5;
+        this.isOnColumn = this.vector.x < img.width;
     }
 
     getHead() {

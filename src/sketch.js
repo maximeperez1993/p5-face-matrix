@@ -16,7 +16,9 @@ const s = skm => {
     };
 
     skm.draw = function () {
-        matrix.paint(skm, img);
+        if (matrix != null) {
+            matrix.paint(skm, img);
+        }
     };
 
     skm.windowResized = function () {

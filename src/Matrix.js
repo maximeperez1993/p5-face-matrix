@@ -20,24 +20,27 @@ class Matrix {
     }
 
     paint(skm, image) {
-        this.countDebug = 0;
+        this.countIter = 0;
 
         skm.loadPixels();
-        this.columns.forEach(column => this.fillSet(column.getHead(), skm, image));
+        this.columns
+            .filter(column => column.shouldDecrypt)
+            .filter(column => column.isOnColumn)
+            .slice(0, max(this.columns.length, 10))
+            .forEach(column => this.fillSet(column.getHead(), skm, image));
         skm.updatePixels();
 
-        if (this.countMax < this.countDebug) {
-            this.countMax = this.countDebug;
-            console.log(this.countDebug);
+        if (this.countMax < this.countIter) {
+            this.countMax = this.countIter;
+            //console.log(this.countIter);
         }
 
     }
 
 
     fillSet(vector, skm, image) {
-        if (vector.x >= img.width || vector.y >= img.height) return;
-        this.countDebug++;
         let probabilityToAdd = (frameCount + 1) / 1000;
+        if (this.countIter > 1000) return;
         for (let x = 0; x < charSize; x++) {
             for (let y = 0; y < charSize; y++) {
                 if (random() > probabilityToAdd) continue;
@@ -46,7 +49,7 @@ class Matrix {
 
                 if (newX >= img.width || newY >= img.height) continue;
                 this.addPixel(skm, newX, newY, image);
-
+                this.countIter++;
             }
         }
     }
