@@ -6,11 +6,13 @@
 let matrix;
 let img;
 
+let canvasPosition;
+
 const s = skm => {
 
     skm.setup = function () {
         let canvas = skm.createCanvas(windowWidth, windowHeight);
-        canvas.position(0, 0);
+        canvasPosition = canvas.position();
         skm.pixelDensity(1);
         skm.background(0);
     };
@@ -24,8 +26,6 @@ const s = skm => {
     skm.windowResized = function () {
         skm.resizeCanvas(windowWidth, windowHeight);
         skm.pixelDensity(1);
-
-
     };
 };
 
@@ -37,16 +37,13 @@ function preload() {
 
 function setup() {
     let canvas = createCanvas(windowWidth, windowHeight);
-    canvas.position(0, 0);
+    canvas.position(canvasPosition.x, canvasPosition.y);
     matrix = new Matrix(img);
-
 }
 
 function draw() {
     clear();
-    if (matrix != null) {
-        matrix.draw();
-    }
+    matrix.draw();
 }
 
 function windowResized() {
